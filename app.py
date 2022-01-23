@@ -141,7 +141,15 @@ def prediction(city_name,country_name,iso_code,label_alpha_2,select_location):
 
   #for share streamlit
   #/app/deployment/chromedriver
-  wd = webdriver.Chrome(executable_path ='chromedriver', options=chrome_options)
+  chrome_options = webdriver.ChromeOptions()
+  chrome_options.add_argument('headless')
+  chrome_options.add_argument('--headless')
+  chrome_options.add_argument('--no-sandbox')
+  chrome_options.add_argument('--disable-dev-shm-usage')
+  chrome_options.add_argument("--use-fake-ui-for-media-stream")
+  from webdriver_manager.chrome import ChromeDriverManager
+  # ChromeDriverManager().install()
+  wd = webdriver.Chrome(executable_path ='./chromedriver.exe', options=chrome_options)
   #wd = webdriver.Chrome(executable_path ='chromedriver')
   
 
@@ -307,13 +315,292 @@ def main():
     #background-size: cover;
     #background-position: center;
     #backdrop-filter: blur(5px);
-    st.sidebar.markdown(
+
+    # CHANGES [START]
+    main_bg = "s3.jpg"
+    main_bg_ext = "jpg"
+
+    st.markdown(
+        f"""
+         <style>
+         .stApp {{
+             background: url(data:image/{main_bg_ext};base64,{base64.b64encode(open(main_bg, "rb").read()).decode()});
+             background-size: cover
+         }}
+         span {{
+            color: white !important;
+         }}
+         li > span {{
+            color: black !important;
+         }}
+         .block-container{{
+            padding: 0px;
+         }}
+          [data-testid="stHorizontalBlock"] {{
+            padding-left: 1rem;  
+            margin-right: 1rem
+          }}
+          [data-testid="stVerticalBlock"] {{
+            gap: 0rem;  
+          }}
+         
+         </style>
+         """,
+        unsafe_allow_html=True
+    )
+    new_title = '<p style="background:  red;font-size:35px;line-height:36px;font-weight:600;color:#fff;text-align:center;padding:13px 0;margin-bottom:7rem;">5  Days Forecasting of Covid 19 New Cases Based on Weather</p>'
+    st.markdown(new_title, unsafe_allow_html=True)
+
+    left, right = st.columns([0.25, 0.7])
+    with left:
+        # st.image("tlogo.png")
+        Date_today = date.today()
+        date_ = '<p style="padding-left:1rem;font-size:30px;line-height:36px;font-weight:600;color:#fff;margin-bottom:1rem;">' \
+                f'<img style="padding-right:1rem;" src="data:image/png;base64,{base64.b64encode(open("calendar-icon.png", "rb").read()).decode()}"/>' \
+                f'{Date_today.strftime("%b %d, %y")}' \
+                    '</p>'
+        # st.write(f'### <span style="color: red">📆</span> {Date_today.strftime("%d %b, %y")}', unsafe_allow_html=True)
+        # html_date = str("<p style='color: white; text-align:center; font-size:20px'>") + str(
+        #     Date_today.strftime("%d %b, %y")) + str("</p>")
+        # st.markdown(html_date, unsafe_allow_html=True)
+
+    if "args" in st.session_state:
+        calendar_st, _, flag_st, loc_city_info_st, _, new_cases_st = st.columns([3, 0.2, 0.8, 5, 7, 3])
+        calendar_st.markdown(date_, unsafe_allow_html=True)
+        left, _, covid1, covid2, covid3, covid4, covid5 = st.columns(
+            [4, 1, 5, 5, 5, 5, 5]
+        )
+    else:
+        st.markdown(date_, unsafe_allow_html=True)
+        left, title = st.columns([0.9,  2])
+
+    with left:
+        select_location_st = st.empty()
+
+    # CHANGES [END]
+
+    st.markdown(
+                    """
+                    <style>
+                         *, *::before, *::after {
+                          box-sizing: border-box;
+                      }
+                      body{
+                        font-family: 'Lato', sans-serif;
+                        background:#f9f9f9;
+                        padding: 0;
+                          margin: 0;
+                      }
+                      .container-fluid {
+                          width: 100%;
+                          padding-right: 32px;
+                          padding-left: 32px;
+                          margin-right: auto;
+                          margin-left: auto;
+                      }
+                      .continer{ 
+                        max-width:1193px; 
+                        margin:auto;
+                        background:#fff;
+                        box-shadow: 0px 0px 10px rgb(136 136 136 / 28%);
+                      }
+                      .row{
+                        display: -ms-flexbox;
+                          display: flex;
+                          -ms-flex-wrap: wrap;
+                          flex-wrap: wrap;
+                          margin-right: -15px;
+                          margin-left: -15px;
+                      }
+                      .col-4, .col-8{
+                        position: relative;
+                          width: 100%;
+                          padding-right: 15px;
+                          padding-left: 15px;
+                      }
+                      .col-4 {
+                          -ms-flex: 0 0 33.33333%;
+                          flex: 0 0 33.33333%;
+                          max-width: 33.33333%;
+                      }
+                      .col-8 {
+                          -ms-flex: 0 0 66.66667%;
+                          flex: 0 0 66.66667%;
+                          max-width: 66.66667%;
+                      }
+                      .forecasting-wrap h2{
+                        background:#1C294B;
+                        font-size:30px;
+                        line-height:36px;
+                        font-weight:500;
+                        color:#fff;
+                        text-align:center;
+                        padding:13px 0;
+                        margin:0;
+                      }
+                      .location-form{
+                        max-width:394px;
+                        margin:64px auto 0;
+                        padding-bottom: 400px;
+                      }
+                      .location-form h3{
+                        color:#1C294B;
+                        font-size:23px;
+                        font-weight:700;
+                        font-family: 'Poppins', sans-serif;
+                        margin:0;
+                        padding-bottom:45px;
+                      }
+                      .location-form h3 img{ 
+                        margin-right:7px; 
+                          position: relative;
+                          top: 3px;
+                      }
+                      .location-form form .form-row{ margin-bottom:23px; } 
+                      .location-form form label{
+                        display:block;
+                        margin-bottom:10px;
+                        font-size:15px;
+                        font-weight:600;
+                        color:#1C294B;
+                      }
+                      .location-form form select{
+                          width: 100%;
+                        border:1px solid rgb(28 41 75 / 30%);
+                          border-radius: 8px;
+                        min-height:38px;
+                        line-height:38px;
+                        padding:0 13px;
+                        font-size:15px;
+                        font-weight:600;
+                          color: rgb(28 41 75 / 40%);
+                          font-family: 'Lato', sans-serif;
+                        -webkit-appearance: none;
+                          -moz-appearance: none;
+                          background: transparent;
+                          background-image: url(image/drop-down-icon.png);
+                          background-repeat: no-repeat;
+                          background-position-x: 96%;
+                          background-position-y: 15px;
+                        box-shadow: 0px 0px 3px rgb(136 136 136 / 28%);
+                      }
+                      .location-form form select:focus-visible{ outline:0; }
+                      .location-form form .footer-f{ text-align:center; }
+                      .location-form form button{
+                        background:#CC0919;
+                        height:35px;
+                        font-size:14px;
+                        font-weight:600;
+                        border:0;
+                        border-radius:8px;
+                        color:#fff;
+                        padding:0 30px;
+                        font-family: 'Lato', sans-serif;
+                          letter-spacing: 0.2px;
+                        box-shadow: 3px 3px 6px #88888869;
+                        cursor:pointer;
+                        margin-top:19px;
+                      }
+                      .forecasting-inner-sec{ padding:68px 0; }
+                      .forecasting-inner-sec .location-form{
+                        padding:50px 33px 105px;
+                          margin: 0;
+                          max-width: initial;
+                        background:#fff;
+                        box-shadow: 0px 0px 10px rgb(136 136 136 / 28%);
+                        border-radius:8px;
+                      }
+                      .weather-sec{
+                        padding:28px 33px;
+                          margin: 0;
+                          max-width: initial;
+                        background:#fff;
+                        box-shadow: 0px 0px 10px rgb(136 136 136 / 28%);
+                        border-radius:8px;
+                        height: 100%;
+                      }
+                      .weather-sec .heading-weather{ display:flex; }
+                      .weather-sec .heading-weather h4{
+                        color:#CC0919;
+                        font-size:18px;
+                        font-weight:700;
+                        font-family: 'Poppins', sans-serif;
+                        margin:0;
+                        padding-bottom:35px;
+                      }
+                      .weather-sec .heading-weather h4 img{ 
+                        margin-right:6px; 
+                          position: relative;
+                          top: 6px;
+                      }
+                      .weather-sec .heading-weather a{
+                        margin-left:auto;
+                        background:#1C294B;
+                        height:36px;
+                        line-height:36px;
+                        font-size:14px;
+                        font-weight:600;
+                        border:0;
+                        color:#fff;
+                        padding:0 11px;
+                        font-family: 'Lato', sans-serif;
+                          letter-spacing: 0.5px;
+                        text-decoration:none;
+                      }
+                      .forecasting-inner-sec .location-form form button {
+                          display: block;
+                          width: 100%;
+                          height: 40px;
+                          font-size: 20px;
+                        margin-top:45px;
+                      }
+
+                      @media (min-width: 768px) and (max-width: 1024px){
+                        
+                        .forecasting-inner-sec .location-form { padding: 50px 15px; }
+                        
+                      }
+
+                      @media (max-width: 767px){
+                        
+                        .col-4, .col-8 {
+                            -ms-flex: 0 0 100%;
+                            flex: 0 0 100%;
+                            max-width: 100%;
+                        }
+                        .continer {	box-shadow: none; }
+                        .forecasting-wrap h2 {
+                            font-size: 18px;
+                            line-height: 28px;
+                          }
+                        .location-form { padding:0 15px; }
+                        .forecasting-inner-sec { padding: 50px 0; }
+                        .forecasting-inner-sec .location-form { 
+                          margin-bottom: 25px; 
+                          padding: 41px 20px 15px;
+                        }
+                        .weather-sec { padding: 28px 20px; }
+                        
+                       
+                      }
+
+
+                    </style>
+      """,
+      unsafe_allow_html=True
+              )
+
+    
+    
+    
+    
+    st.markdown(
       f"""
       <style>
       
       .reportview-container .main {{
         
-          background-color: #343A40
+          background-color:#f9f9f9;
           
           }}
      
@@ -326,137 +613,217 @@ def main():
     #fro google colab
     #st.sidebar.image("/content/drive/MyDrive/Weather/Deployment/tlogo.png")
     #for share streamlit
-    st.sidebar.image("tlogo.png")
+    #st.sidebar.image("tlogo.png")
     Date_today = date.today()  
        
-    html_date = str("<p style='color: white; text-align:center; font-size:20px'>") + str(Date_today.strftime("%d %b, %y"))+ str("</p>")
-    st.sidebar.markdown(html_date, unsafe_allow_html=True)
-   
+    # html_date = str("<p style='color: white; text-align:center; font-size:20px'>") + str(Date_today.strftime("%d %b, %y"))+ str("</p>")
+    # st.sidebar.markdown(html_date, unsafe_allow_html=True)
+    #
     st.markdown(
       f"""
       <style>
       [data-testid="stSidebar"][aria-expanded="true"] > div:first-child {{
          
-          background-color:#343A40;
-          width:230px;
+          background-color:#f9f9f9;
+          width:300px;
           
       }}
       </style>
       """,
       unsafe_allow_html=True,
       )
-    
-    
-    new_title = '<p style="font-style: oblique; text-align:center;color:#cc0919; font-size:25px">5  Days Forecasting of Covid 19 New Cases Based on Weather</p>'
-    st.markdown(new_title,unsafe_allow_html=True)
-   
-  
+
 
     #adding sidebar
 
     #-- Set by location
-    sel_location = '<p style="font-style: oblique; text-align:left;color:white; font-size:16px">Select Location</p>'
-    st.sidebar.markdown(sel_location,unsafe_allow_html=True)
+    #sel_location = '<p style="font-style: oblique; text-align:left;color:white; font-size:16px">Select Location</p>'
+    #st.markdown(sel_location,unsafe_allow_html=True)
     st.markdown(
     """
     <style>
+    label {
+        font-size: 16px !important;
+        padding-top: 1.5rem !important;
+        font-weight: 600 !important;
+        padding-bottom: 10px !important;
+        color: white !important;
+    }
     [data-baseweb="select"] {
-        margin-top: -50px;
-        
-        
-        
+        margin-top: -10px;
+        color: white;
     }
     div[role="listbox"] ul {
-        background-color: #585858;
+        /* background-color: #585858; */
     }
     div[data-baseweb="select"] > div {
-          background-color:#585858;
-          color: #c0c0c0;
-          border-color: #343A40;
+           width: 100%;
+            /* border:1px solid rgb(28 41 75 / 30%);
+            border-radius: 8px;
+            min-height:38px;
+            line-height:38px;
+            
+            font-size:15px;
+            font-weight:600;
+            color: white;
+            font-family: 'Lato', sans-serif;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background: transparent;
+            background-image: url(image/drop-down-icon.png);
+            background-repeat: no-repeat;
+            background-position-x: 96%;
+            background-position-y: 15px;
+            box-shadow: 0px 0px 3px rgb(136 136 136 / 28%);
+            */
+      }
+    div[data-baseweb="select"] > div > div {
+        padding: 0.35rem !important;
+    }
+      
+      div.stButton > button:first-child {
+        background:#CC0919;
+        height:35px;
+        font-size:14px;
+        font-weight:600;
+        border:0;
+        border-radius:8px;
+        color:#fff;
+        padding:0 30px;
+        font-family: 'Lato', sans-serif;
+        letter-spacing: 0.2px;
+        box-shadow: 3px 3px 6px #88888869;
+        cursor:pointer;
+        margin-top:19px;
+        display: block;
+          width: 100%;
+          height: 40px;
+          font-size: 20px;
+        margin-top:45px;
       }
 
     </style>
     """,
     unsafe_allow_html=True,
     )
-    select_location = st.sidebar.selectbox('Select Location',
+    select_location = select_location_st.selectbox('Select Location',
                                     ['Australia', 'Brazil','Canada','France','Germany','Italy','India','Japan','Mexico','Spain','United Kingdom','USA'] )
-    
+    reference_file = pd.read_csv('https://raw.githubusercontent.com/neerja198/Deployment/main/location_list.csv')
+
+    if select_location == "USA":
+        usa_dataset = pd.read_csv('https://raw.githubusercontent.com/neerja198/Deployment/main/USA_referance.csv')
+        sel_prov = '<p style="font-style: oblique; text-align:left;color:white; font-size:16px">Select Province</p>'
+        sel_city = '<p style="font-style: oblique; text-align:left;color:white; font-size:16px">Select City</p>'
+        with left:
+            # st.markdown(sel_prov, unsafe_allow_html=True)
+            us_state = st.selectbox("Select Province", sorted(usa_dataset.State.unique()), index=0)
+            # st.markdown(sel_city, unsafe_allow_html=True)
+            city_name = st.selectbox(
+                   "Select City",
+                sorted(usa_dataset.loc[usa_dataset.State == us_state].City.unique())
+            )
+
+    elif select_location == 'France':
+        sel_region = '<p style="font-style: oblique; text-align:left;color:white; font-size:16px">Select Region</p>'
+        sel_dept = '<p style="font-style: oblique; text-align:left;color:white; font-size:16px">Select Department</p>'
+        with left:
+            # st.sidebar.markdown(sel_region, unsafe_allow_html=True)
+            region = st.sidebar.selectbox("Select Region",
+                                          sorted(reference_file.loc[reference_file.Country == 'France'].City.unique()),
+                                          index=0)
+            # st.sidebar.markdown(sel_dept, unsafe_allow_html=True)
+            dept_name = st.sidebar.selectbox("Select Department",
+                                             sorted(reference_file.loc[reference_file.City == region].dept.unique()))
+    else:
+        with left:
+            select_province_city_st = st.empty()
+            select_region_st = st.empty()
+
+    with left:
+        forecast_st = st.empty()
+
+
     #for streamlit
-    reference_file = pd.read_csv('https://raw.githubusercontent.com/neerja198/Deployment/main/location_list.csv')                         
     #for google colab
     #reference_file = pd.read_csv('/content/drive/MyDrive/Weather/Deployment/location_list.csv')
     if select_location == 'USA':
-            usa_dataset = pd.read_csv('https://raw.githubusercontent.com/neerja198/Deployment/main/USA_referance.csv') 
-           
-            sel_prov = '<p style="font-style: oblique; text-align:left;color:white; font-size:16px">Select Province</p>'
-            st.sidebar.markdown(sel_prov,unsafe_allow_html=True)
-            us_state = st.sidebar.selectbox("Select Province", sorted(usa_dataset.State.unique()), index=0)
-            sel_city = '<p style="font-style: oblique; text-align:left;color:white; font-size:16px">Select City</p>'
-            st.sidebar.markdown(sel_city,unsafe_allow_html=True)
-            city_name = st.sidebar.selectbox("Select City", sorted(usa_dataset.loc[usa_dataset.State == us_state].City.unique()))
-           
+            # usa_dataset = pd.read_csv('https://raw.githubusercontent.com/neerja198/Deployment/main/USA_referance.csv')
+
+            # sel_prov = '<p style="font-style: oblique; text-align:left;color:white; font-size:16px">Select Province</p>'
+            # st.sidebar.markdown(sel_prov,unsafe_allow_html=True)
+            # us_state = st.sidebar.selectbox("Select Province", sorted(usa_dataset.State.unique()), index=0)
+            # sel_city = '<p style="font-style: oblique; text-align:left;color:white; font-size:16px">Select City</p>'
+            # st.sidebar.markdown(sel_city,unsafe_allow_html=True)
+            # city_name = st.sidebar.selectbox("Select City", sorted(usa_dataset.loc[usa_dataset.State == us_state].City.unique()))
+
             city_name = city_name.replace("'", "")
-            
+
             # 0: city   1: country   2: ISO   3: Label
             us_reference =usa_dataset.loc[usa_dataset.City== city_name].values[0]
-          
+
             country_name = us_state
             iso_code = us_reference[4]
-            alpha_2 = us_reference[2] 
+            alpha_2 = us_reference[2]
             label_alpha_2 = alpha_2[:2].lower()
 
 
             result =""
-    elif select_location == 'France':  
-            sel_region = '<p style="font-style: oblique; text-align:left;color:white; font-size:16px">Select Region</p>'
-            st.sidebar.markdown(sel_region,unsafe_allow_html=True)
-
-            region = st.sidebar.selectbox("Select Region", sorted(reference_file.loc[reference_file.Country == 'France'].City.unique()), index=0)
-
-
-            sel_dept = '<p style="font-style: oblique; text-align:left;color:white; font-size:16px">Select Department</p>'
-            st.sidebar.markdown(sel_dept,unsafe_allow_html=True)
-            dept_name = st.sidebar.selectbox("Select Department", sorted(reference_file.loc[reference_file.City == region].dept.unique()))
-            
+    elif select_location == 'France':
+            # sel_region = '<p style="font-style: oblique; text-align:left;color:white; font-size:16px">Select Region</p>'
+            # st.sidebar.markdown(sel_region,unsafe_allow_html=True)
+            #
+            # region = st.sidebar.selectbox("Select Region", sorted(reference_file.loc[reference_file.Country == 'France'].City.unique()), index=0)
+            #
+            #
+            # sel_dept = '<p style="font-style: oblique; text-align:left;color:white; font-size:16px">Select Department</p>'
+            # st.sidebar.markdown(sel_dept,unsafe_allow_html=True)
+            # dept_name = st.sidebar.selectbox("Select Department", sorted(reference_file.loc[reference_file.City == region].dept.unique()))
+            #
              # 0: city   1: country   2: ISO   3: Label
             dept_key =reference_file.loc[reference_file.dept== dept_name].values[0]
             city_name = dept_key[6]
             country_name = dept_key[1]
             country_name = country_name.lower()
             iso_code = dept_key[3]
-            alpha_2 = dept_key[2] 
+            alpha_2 = dept_key[2]
             label_alpha_2 = alpha_2[:2].lower()
-           
+
 
 
             result =""
-    else: 
+    else:
           reference_file = pd.read_csv('https://raw.githubusercontent.com/neerja198/Deployment/main/location_list.csv')
-          
+
 
           #country = st.sidebar.selectbox("Select Country", sorted(reference_file.Country.unique()), index=0)
           country = select_location.replace(" ", "-")
-          sel_prov_city = '<p style="font-style: oblique; text-align:left;color:white; font-size:16px">Select Province/City</p>'
-          st.sidebar.markdown(sel_prov_city,unsafe_allow_html=True)
-          city_name = st.sidebar.selectbox("Select Province/City", sorted(reference_file.loc[reference_file.Country == country].City.unique()))    
+          #sel_prov_city = '<p style="font-style: oblique; text-align:left;color:white; font-size:16px">Select Province/City</p>'
+          #st.sidebar.markdown(sel_prov_city,unsafe_allow_html=True)
+          city_name = select_province_city_st.selectbox("Select Province/City", sorted(reference_file.loc[reference_file.Country == country].City.unique()))
           city_name = city_name.replace("'", "")
-          
+
           # 0: city   1: country   2: ISO   3: Label
           city_reference =reference_file.loc[reference_file.City== city_name].values[0]
-        
+
           country_name = city_reference[1]
           country_name = country_name.lower()
           iso_code = city_reference[3]
-          alpha_2 = city_reference[2] 
+          alpha_2 = city_reference[2]
           label_alpha_2 = alpha_2[:2].lower()
 
 
           result =""
 
     # when 'Predict' is clicked, make the prediction and store it 
-    if st.sidebar.button("Forecast"): 
-        result = prediction(city_name,country_name,iso_code,label_alpha_2,select_location)
+    if forecast_st.button("Forecast") or "args" in st.session_state:
+        if "args" not in st.session_state:
+            st.session_state["args"] = [city_name, country_name, iso_code, label_alpha_2, select_location]
+            print("rerun")
+            st.experimental_rerun()
+        args = st.session_state["args"]
+        # st.write(args)
+        del st.session_state["args"]
+        result = prediction(*args)
         #st.success(result)
         if len(result) == 6:
             forecast_weather = result[2]
@@ -468,19 +835,23 @@ def main():
             weather_img = [d['weather_img'] for d in forecast_weather[0] if 'weather_img' in d]
 
            
-            col1,col2= st.columns(2)
-            Date_today = date.today()  
-            
-            html_location = str("<p style='text-align: left; color: white; font-size:20px'>") + str( result[5] + " , "  +result[1])+ str("</p>")
-            col1.markdown(html_location, unsafe_allow_html=True)
-            if result[4] == 'fl':
-                st.image("https://flagcdn.com/256x192/"+ "us-" +result[4]+".png" , width=40)
+            Date_today = date.today()
+
+            iso_code_usa = ['al','az','ar','ca','co','de','ga','hi','id','in','ia','ks','ky','la','me','md','ma','mn','ms','mo','mt','ne','nv','nh','nj','nm','ny','nc','nd','oh',
+                            'ok','or','pa','pr','ri','sc','sd','tn','tx','fl','mi']
+
+            html_location = str("<p style='margin-bottom:3rem;text-align: left; color:#ffffff;font-size:23px;font-weight:700;'>") + str( result[5] + " , "  +result[1])+ str("</p>")
+            loc_city_info_st.markdown(html_location, unsafe_allow_html=True)
+
+
+            if result[4] in iso_code_usa and result[1] == 'USA' :
+                flag_st.image("https://flagcdn.com/256x192/"+ "us-" +result[4]+".png" , width=40)
             else:
-                st.image("https://flagcdn.com/256x192/"+result[4]+".png" , width=40)
-            html_newcases = str("<p style='text-align: right; color: white; font-size:20px'>") + str( "New Cases: " + f"{int(result[3]):,}")+ str("</p>")
-            col2.markdown(html_newcases, unsafe_allow_html=True)
-            
-            
+                flag_st.image("https://flagcdn.com/256x192/"+result[4]+".png" , width=40)
+            html_newcases = str("<p style=' text-align: right;margin-left: auto;background: #ffffff;height: 36px;line-height: 36px;font-size: 23px;font-weight: 700;border: 0px;color: #202c4c;padding: 0px 20px;max-width: fit-content;'>") + str( "New Cases: " + f"{int(result[3]):,}")+ str("</p>")
+            new_cases_st.markdown(html_newcases, unsafe_allow_html=True)
+
+
             #st.metric("New Cases", f"{int(result[3]):,}") 
             #st.metric("Location", result[1].title())
         
@@ -573,9 +944,9 @@ def main():
             min_num = min(range_lst)
            
             
-            covid1, covid2,covid3,covid4,covid5 = st.columns(5)
-            
-        
+            # covid1, covid2,covid3,covid4,covid5 = st.columns(5)
+
+
             
             st.markdown(
                     """
@@ -634,7 +1005,7 @@ def main():
                 if largest_num == last_num :
                       st.markdown(
                         f"""
-                            <div style="background-color: #DC3545; padding: 10px; min-height:200px;">
+                            <div style="background-color: #DC3545; padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
                               <h4 class="date">{date_lst[0]}</h4>
                               <p></p>
                               <h3 class="newcases">{format_nc[1]}</h3>
@@ -652,7 +1023,7 @@ def main():
                 elif min_num == last_num :
                        st.markdown(
                         f"""
-                            <div style="background-color: #28A745; padding: 10px;padding: 10px; min-height:200px;">
+                            <div style="background-color: #28A745; padding: 10px;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
                             <h4 class="date">{date_lst[0]}</h4> 
                             <p></p> 
                             <h3 class="newcases">{format_nc[1]}</h3>
@@ -669,7 +1040,7 @@ def main():
                 else:
                        st.markdown(
                         f"""
-                            <div style="background-color: #F4BB44;padding: 10px; min-height:200px;">
+                            <div style="background-color: #F4BB44;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
                             <h4 class="date">{date_lst[0]}</h4>
                             <p></p>  
                             <h3 class="newcases">{format_nc[1]}</h3>
@@ -692,7 +1063,7 @@ def main():
                 if largest_num == last_num :
                   st.markdown(
                     f"""
-                        <div style="background-color: #DC3545;padding: 10px; min-height:200px;">
+                        <div style="background-color: #DC3545;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
                         <h4 class="date">{date_lst[1]}</h4>
                         <p></p>  
                         <h3 class="newcases">{format_nc[2]}</h3>
@@ -709,7 +1080,7 @@ def main():
                 elif min_num == last_num : 
                   st.markdown(
                       f"""
-                          <div style="background-color: #28A745;padding: 10px; min-height:200px;">
+                          <div style="background-color: #28A745;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
                           <h4 class="date">{date_lst[1]}</h4>
                           <p></p>  
                           <h3 class="newcases">{format_nc[2]}</h3>
@@ -726,7 +1097,7 @@ def main():
                 else: 
                   st.markdown(
                       f"""
-                          <div style="background-color: #F4BB44;padding: 10px; min-height:200px;">
+                          <div style="background-color: #F4BB44;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
                           <h4 class="date">{date_lst[1]}</h4>
                           <p></p>  
                           <h3 class="newcases">{format_nc[2]}</h3>
@@ -749,7 +1120,7 @@ def main():
                 if largest_num == last_num :
                     st.markdown(
                       f"""
-                          <div style="background-color: #DC3545;padding: 10px; min-height:200px;">
+                          <div style="background-color: #DC3545;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
                           <h4 class="date">{date_lst[2]}</h4>
                           <p></p>  
                           <h3 class="newcases">{format_nc[3]}</h3>
@@ -766,7 +1137,7 @@ def main():
                 elif min_num == last_num :
                     st.markdown(
                       f"""
-                           <div style="background-color: #28A745;padding: 10px; min-height:200px;">
+                           <div style="background-color: #28A745;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
                           <h4 class="date">{date_lst[2]}</h4>
                           <p></p>  
                           <h3 class="newcases">{format_nc[3]}</h3>
@@ -783,7 +1154,7 @@ def main():
                 else:
                     st.markdown(
                       f"""
-                           <div style="background-color: #F4BB44;padding: 10px; min-height:200px;">
+                           <div style="background-color: #F4BB44;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
                           <h4 class="date">{date_lst[2]}</h4>
                           <p></p>  
                           <h3 class="newcases">{format_nc[3]}</h3>
@@ -806,7 +1177,7 @@ def main():
                 if largest_num == last_num :
                     st.markdown(
                       f"""
-                          <div style="background-color: #DC3545;padding: 10px; min-height:200px;">
+                          <div style="background-color: #DC3545;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
                           <h4 class="date">{date_lst[3]}</h4>
                           <p></p>  
                           <h3 class="newcases">{format_nc[4]}</h3>
@@ -824,7 +1195,7 @@ def main():
                 elif min_num == last_num :
                    st.markdown(
                       f"""
-                          <div style="background-color: #28A745;padding: 10px; min-height:200px;">
+                          <div style="background-color: #28A745;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
                           <h4 class="date">{date_lst[3]}</h4>
                           <p></p>  
                           <h3 class="newcases">{format_nc[4]}</h3>
@@ -841,7 +1212,7 @@ def main():
                 else :
                    st.markdown(
                       f"""
-                          <div style="background-color: #F4BB44;padding: 10px; min-height:200px;">
+                          <div style="background-color: #F4BB44;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
                           <h4 class="date">{date_lst[3]}</h4>
                           <p></p>  
                           <h3 class="newcases">{format_nc[4]}</h3>
@@ -865,7 +1236,7 @@ def main():
                   
                  st.markdown(
                       f"""
-                          <div style="background-color: #DC3545;padding: 10px; min-height:200px;">
+                          <div style="background-color: #DC3545;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;margin-right:1rem">
                           <h4 class="date">{date_lst[4]}</h4>
                           <p></p>  
                           <h3 class="newcases">{format_nc[5]}</h3>
@@ -884,7 +1255,7 @@ def main():
 
                      st.markdown(
                         f"""
-                            <div style="background-color: #28A745;padding: 10px; min-height:200px;">
+                            <div style="background-color: #28A745;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
                             <h4 class="date">{date_lst[4]}</h4>
                             <p></p>  
                             <h3 class="newcases">{format_nc[5]}</h3>
@@ -902,7 +1273,7 @@ def main():
 
                      st.markdown(
                         f"""
-                            <div style="background-color: #F4BB44;padding: 10px; min-height:200px;">
+                            <div style="background-color: #F4BB44;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
                             <h4 class="date">{date_lst[4]}</h4>
                             <p></p>  
                             <h3 class="newcases">{format_nc[5]}</h3>
@@ -920,7 +1291,16 @@ def main():
         
         
         else:
-            st.success(result)  
+            st.success(result)
+    else:
+        with title:
+            # st.columns(2)
+            new_title = '<p style="font-size:40px;line-height:40px;font-weight:600;color:#fff;text-align:center;padding:13px 0;margin:0;padding-top:4rem">' \
+                        'This is a machine learning model which forecast<br>' \
+                        'the 5 day covid 19 cases based on current weather<br>' \
+                        'of the selected location from given dropdown' \
+                        '</p>'
+            st.markdown(new_title, unsafe_allow_html=True)
 
             
             
