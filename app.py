@@ -140,9 +140,16 @@ def prediction(city_name,country_name,iso_code,label_alpha_2,select_location):
   #return mydir
 
   #for share streamlit
-  #for share streamlit
   #/app/deployment/chromedriver
-  wd = webdriver.Chrome(executable_path ='chromedriver', options=chrome_options)
+  chrome_options = webdriver.ChromeOptions()
+  chrome_options.add_argument('headless')
+  chrome_options.add_argument('--headless')
+  chrome_options.add_argument('--no-sandbox')
+  chrome_options.add_argument('--disable-dev-shm-usage')
+  chrome_options.add_argument("--use-fake-ui-for-media-stream")
+  from webdriver_manager.chrome import ChromeDriverManager
+  # ChromeDriverManager().install()
+  wd = webdriver.Chrome(executable_path ='./chromedriver.exe', options=chrome_options)
   #wd = webdriver.Chrome(executable_path ='chromedriver')
   
 
@@ -425,7 +432,7 @@ def main():
                         background:#1C294B;
                         font-size:30px;
                         line-height:36px;
-                        font-weight:500;
+                        font-weight:600;
                         color:#fff;
                         text-align:center;
                         padding:13px 0;
@@ -721,11 +728,11 @@ def main():
         sel_dept = '<p style="font-style: oblique; text-align:left;color:white; font-size:16px">Select Department</p>'
         with left:
             # st.sidebar.markdown(sel_region, unsafe_allow_html=True)
-            region = st.sidebar.selectbox("Select Region",
+            region = st.selectbox("Select Region",
                                           sorted(reference_file.loc[reference_file.Country == 'France'].City.unique()),
                                           index=0)
             # st.sidebar.markdown(sel_dept, unsafe_allow_html=True)
-            dept_name = st.sidebar.selectbox("Select Department",
+            dept_name = st.selectbox("Select Department",
                                              sorted(reference_file.loc[reference_file.City == region].dept.unique()))
     else:
         with left:
@@ -998,7 +1005,7 @@ def main():
                 if largest_num == last_num :
                       st.markdown(
                         f"""
-                            <div style="background-color: #DC3545; padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
+                            <div style="background-color: #DC3545; padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:600px;">
                               <h4 class="date">{date_lst[0]}</h4>
                               <p></p>
                               <h3 class="newcases">{format_nc[1]}</h3>
@@ -1016,7 +1023,7 @@ def main():
                 elif min_num == last_num :
                        st.markdown(
                         f"""
-                            <div style="background-color: #28A745; padding: 10px;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
+                            <div style="background-color: #28A745; padding: 10px;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:600px;">
                             <h4 class="date">{date_lst[0]}</h4> 
                             <p></p> 
                             <h3 class="newcases">{format_nc[1]}</h3>
@@ -1033,7 +1040,7 @@ def main():
                 else:
                        st.markdown(
                         f"""
-                            <div style="background-color: #F4BB44;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
+                            <div style="background-color: #F4BB44;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:600px;">
                             <h4 class="date">{date_lst[0]}</h4>
                             <p></p>  
                             <h3 class="newcases">{format_nc[1]}</h3>
@@ -1056,7 +1063,7 @@ def main():
                 if largest_num == last_num :
                   st.markdown(
                     f"""
-                        <div style="background-color: #DC3545;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
+                        <div style="background-color: #DC3545;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:600px;">
                         <h4 class="date">{date_lst[1]}</h4>
                         <p></p>  
                         <h3 class="newcases">{format_nc[2]}</h3>
@@ -1073,7 +1080,7 @@ def main():
                 elif min_num == last_num : 
                   st.markdown(
                       f"""
-                          <div style="background-color: #28A745;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
+                          <div style="background-color: #28A745;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:600px;">
                           <h4 class="date">{date_lst[1]}</h4>
                           <p></p>  
                           <h3 class="newcases">{format_nc[2]}</h3>
@@ -1090,7 +1097,7 @@ def main():
                 else: 
                   st.markdown(
                       f"""
-                          <div style="background-color: #F4BB44;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
+                          <div style="background-color: #F4BB44;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:600px;">
                           <h4 class="date">{date_lst[1]}</h4>
                           <p></p>  
                           <h3 class="newcases">{format_nc[2]}</h3>
@@ -1113,7 +1120,7 @@ def main():
                 if largest_num == last_num :
                     st.markdown(
                       f"""
-                          <div style="background-color: #DC3545;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
+                          <div style="background-color: #DC3545;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:600px;">
                           <h4 class="date">{date_lst[2]}</h4>
                           <p></p>  
                           <h3 class="newcases">{format_nc[3]}</h3>
@@ -1130,7 +1137,7 @@ def main():
                 elif min_num == last_num :
                     st.markdown(
                       f"""
-                           <div style="background-color: #28A745;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
+                           <div style="background-color: #28A745;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:600px;">
                           <h4 class="date">{date_lst[2]}</h4>
                           <p></p>  
                           <h3 class="newcases">{format_nc[3]}</h3>
@@ -1147,7 +1154,7 @@ def main():
                 else:
                     st.markdown(
                       f"""
-                           <div style="background-color: #F4BB44;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
+                           <div style="background-color: #F4BB44;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:600px;">
                           <h4 class="date">{date_lst[2]}</h4>
                           <p></p>  
                           <h3 class="newcases">{format_nc[3]}</h3>
@@ -1170,7 +1177,7 @@ def main():
                 if largest_num == last_num :
                     st.markdown(
                       f"""
-                          <div style="background-color: #DC3545;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
+                          <div style="background-color: #DC3545;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:600px;">
                           <h4 class="date">{date_lst[3]}</h4>
                           <p></p>  
                           <h3 class="newcases">{format_nc[4]}</h3>
@@ -1188,7 +1195,7 @@ def main():
                 elif min_num == last_num :
                    st.markdown(
                       f"""
-                          <div style="background-color: #28A745;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
+                          <div style="background-color: #28A745;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:600px;">
                           <h4 class="date">{date_lst[3]}</h4>
                           <p></p>  
                           <h3 class="newcases">{format_nc[4]}</h3>
@@ -1205,7 +1212,7 @@ def main():
                 else :
                    st.markdown(
                       f"""
-                          <div style="background-color: #F4BB44;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
+                          <div style="background-color: #F4BB44;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:600px;">
                           <h4 class="date">{date_lst[3]}</h4>
                           <p></p>  
                           <h3 class="newcases">{format_nc[4]}</h3>
@@ -1229,7 +1236,7 @@ def main():
                   
                  st.markdown(
                       f"""
-                          <div style="background-color: #DC3545;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;margin-right:1rem">
+                          <div style="background-color: #DC3545;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:600px;margin-right:1rem">
                           <h4 class="date">{date_lst[4]}</h4>
                           <p></p>  
                           <h3 class="newcases">{format_nc[5]}</h3>
@@ -1248,7 +1255,7 @@ def main():
 
                      st.markdown(
                         f"""
-                            <div style="background-color: #28A745;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
+                            <div style="background-color: #28A745;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:600px;">
                             <h4 class="date">{date_lst[4]}</h4>
                             <p></p>  
                             <h3 class="newcases">{format_nc[5]}</h3>
@@ -1266,7 +1273,7 @@ def main():
 
                      st.markdown(
                         f"""
-                            <div style="background-color: #F4BB44;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:500px;">
+                            <div style="background-color: #F4BB44;padding: 10px; border-style: solid; border-width: thick; border-color: white; min-height:600px;">
                             <h4 class="date">{date_lst[4]}</h4>
                             <p></p>  
                             <h3 class="newcases">{format_nc[5]}</h3>
