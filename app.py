@@ -835,7 +835,7 @@ def main():
             iso_code_usa = ['al','az','ar','ca','co','de','ga','hi','id','in','ia','ks','ky','la','me','md','ma','mn','ms','mo','mt','ne','nv','nh','nj','nm','ny','nc','nd','oh',
                             'ok','or','pa','pr','ri','sc','sd','tn','tx','fl','mi']
 
-            html_location = str("<p style='margin-bottom:3rem;text-align: left; color:#ffffff;font-size:23px;font-weight:700;'>") + str( result[5] + " , "  +result[1])+ str("</p>")
+            html_location = str("<p style='margin-bottom:3rem;text-align: left; color:#ffffff;font-size:21px;font-weight:700;'>") + str( result[5] + " , "  +result[1])+ str("</p>")
             loc_city_info_st.markdown(html_location, unsafe_allow_html=True)
 
 
