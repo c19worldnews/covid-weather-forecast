@@ -192,7 +192,7 @@ def prediction(city_name,country_name,iso_code,label_alpha_2,select_location):
     elements=wd.find_elements_by_xpath("//button[contains(@class,'showall')]")
      for element in elements:
       wd.execute_script("arguments[0].click();", element);
-     return element.text
+      return element.text
     # Get 'HTML'
 
     html_data = wd.page_source
