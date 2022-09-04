@@ -704,7 +704,7 @@ def main():
     )
     select_location = select_location_st.selectbox('Select Location',
                                     ['Australia', 'Brazil','Canada','France','Germany','Italy','India','Japan','Mexico','Spain','United Kingdom','USA'] )
-    reference_file = pd.read_csv('https://raw.githubusercontent.com/neerja198/Deployment/main/location_list.csv')
+    reference_file = pd.read_csv('https://raw.githubusercontent.com/c19worldnews/covid-weather-forecast/main/location_list.csv')
 
     if select_location == "USA":
         usa_dataset = pd.read_csv('https://raw.githubusercontent.com/neerja198/Deployment/main/USA_referance.csv')
